@@ -28,6 +28,7 @@ class GitRepo:
     repository_path = self.parse_repository(self.git("remote -v"))
     if not repository_path:
       raise NotAGithubRepositoryError
+    repository_path = re.sub(r"-\w+\/", '/', repository_path)
     return repository_path
 
   def path_from_rootdir(self, filename):
