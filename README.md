@@ -8,8 +8,8 @@ A set of handy tools for using Sublime Text 2 editor with [Github](http://github
 
 Open any directory of your GIT working copy in Sublime Text 2.
 
-* Press `Ctrl + Shift + P` and select `Github: Open File` or just press `Ctrl + Shift + ^` to open currently edited file in Github.
-* Press `Ctrl + Shift + P` and select `Github: Blame` to open blame for currently edited file in Github.
+* Press `Ctrl + Shift + P` and select `Github: Open File` or just press `Ctrl + Shift + ^` to open currently edited file in Github. Alternatively, set a custom shortkey for the `github_open` command.
+* Press `Ctrl + Shift + P` and select `Github: Blame` to open blame for currently edited file in Github. Alternatively, set a custom shortkey for the `github_blame` command.
 
 Use `Cmd` instead of `Ctrl` on Mac OS X.
 
