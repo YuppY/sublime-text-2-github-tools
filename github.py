@@ -89,8 +89,8 @@ class GithubWindowCommand(sublime_plugin.WindowCommand):
     if not self.window.active_view():
       raise NoFileOpenError
     view = self.window.active_view()
-    (row,col) = view.rowcol(view.sel()[0])
-    return row
+    (row,col) = view.rowcol(view.sel()[0].begin())
+    return row + 1
 
   @property
   def repository(self):
@@ -111,4 +111,4 @@ def git_browse_file_url(repository, filepath, branch='master'):
   return "https://%s/blob/%s%s" % (repository, branch, filepath)
 
 def git_blame_file_url(repository, filepath, line_number, branch='master'):
-  return "https://%s/blame/%s%s#L%d" % (repository, branch, filepath, line_number+1)
+  return "https://%s/blame/%s%s#L%d" % (repository, branch, filepath, line_number)
