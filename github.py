@@ -47,8 +47,8 @@ class GitRepo:
   def browse_file_url(self, filename):
     return git_browse_file_url(self.repository_path, self.path_from_rootdir(filename), self.branch())
 
-  def blame_file_url(self, filename):
-    return git_blame_file_url(self.repository_path, self.path_from_rootdir(filename), self.branch())
+  def blame_file_url(self, filename, line_number):
+    return git_blame_file_url(self.repository_path, self.path_from_rootdir(filename), line_number, self.branch())
 
   def parse_repository(self, remotes):
     remotes = list(set(map(lambda l: re.split("\s", l)[1], remotes.splitlines())))
@@ -85,6 +85,13 @@ class GithubWindowCommand(sublime_plugin.WindowCommand):
       raise NoFileOpenError
     return self.window.active_view().file_name()
 
+  def line_number(self):
+    if not self.window.active_view():
+      raise NoFileOpenError
+    view = self.window.active_view()
+    (row,col) = view.rowcol(view.sel()[0])
+    return row
+
   @property
   def repository(self):
     return GitRepo(self.rootdir())
@@ -103,5 +110,5 @@ def with_repo(func):
 def git_browse_file_url(repository, filepath, branch='master'):
   return "https://%s/blob/%s%s" % (repository, branch, filepath)
 
-def git_blame_file_url(repository, filepath, branch='master'):
-  return "https://%s/blame/%s%s" % (repository, branch, filepath)
+def git_blame_file_url(repository, filepath, line_number, branch='master'):
+  return "https://%s/blame/%s%s#L%d" % (repository, branch, filepath, line_number+1)
