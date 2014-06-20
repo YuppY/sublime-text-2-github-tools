@@ -152,10 +152,10 @@ class GitRepo(object):
         return git_browse_file_url(self.info['web_uri'],
                                    self.path_from_rootdir(filename), self.branch)
 
-    def blame_file_url(self, filename):
+    def blame_file_url(self, filename, line_number):
         return git_blame_file_url(
             self.info['web_uri'], self.path_from_rootdir(filename),
-            self.revision)
+            self.revision, line_number)
 
     def repository_url(self):
         return git_repository_url(self.info['web_uri'])
@@ -181,9 +181,17 @@ class GithubWindowCommand(sublime_plugin.WindowCommand):
         return filename
 
     def filename(self):
-        if not self.window.active_view() or self.window.active_view().file_name() is None:
+        view = self.window.active_view()
+        if not view or view.file_name() is None:
             raise NoFileOpenError
-        return self.window.active_view().file_name()
+        return view.file_name()
+
+    def line_number(self):
+        view = self.window.active_view()
+        if not view:
+            raise NoFileOpenError
+        row = view.rowcol(view.sel()[0].begin())[0]
+        return row + 1
 
     @property
     def repository(self):
@@ -226,7 +234,7 @@ def with_repo(func):
             sublime.message_dialog("Github repository not found.")
         except (NoFileOpenError):
             sublime.message_dialog("Please open a file first.")
-    
+
     return wrapper
 
 
@@ -234,8 +242,9 @@ def git_browse_file_url(repository, filepath, branch='master'):
     return "https://%s/blob/%s%s" % (repository, branch, filepath)
 
 
-def git_blame_file_url(repository, filepath, revision):
-    return "https://%s/blame/%s%s" % (repository, revision, filepath)
+def git_blame_file_url(repository, filepath, revision, line_number):
+    return "https://%s/blame/%s%s#L%d" % (
+        repository, revision, filepath, line_number)
 
 
 def git_issues_url(repository):
